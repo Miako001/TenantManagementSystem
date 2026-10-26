@@ -5,11 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.example.tenantmanagementsystem.databinding.FragmentAddTenantBinding
+import androidx.navigation.fragment.findNavController
+import com.example.tenantmanagementsystem.databinding.FragmentDashboardBinding
 
-class AddTenantFragment : Fragment() {
+class DashboardFragment : Fragment() {
 
-    private var _binding: FragmentAddTenantBinding? = null
+    private var _binding: FragmentDashboardBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -17,13 +18,28 @@ class AddTenantFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentAddTenantBinding.inflate(inflater, container, false)
+        _binding = FragmentDashboardBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        // The SAVE button is added in Practical 3
+
+        val tenantCount = TenantRepository.tenants.size
+        val totalRent = TenantRepository.totalRent()
+
+        binding.tenantCountTextView.text = "Tenants\n$tenantCount"
+        binding.totalRentTextView.text = "Total rent\nKSh %,.0f".format(totalRent)
+
+        binding.addTenantButton.setOnClickListener {
+            val action = DashboardFragmentDirections.actionDashboardFragmentToAddTenantFragment()
+            findNavController().navigate(action)
+        }
+
+        binding.viewTenantsButton.setOnClickListener {
+            val action = DashboardFragmentDirections.actionDashboardFragmentToViewTenantsFragment()
+            findNavController().navigate(action)
+        }
     }
 
     override fun onDestroyView() {
